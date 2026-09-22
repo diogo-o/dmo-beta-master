@@ -6,6 +6,7 @@ Status values:
 
 - `FOUND` — source exists and has been verified in the source repository.
 - `TO IMPORT` — source exists and should be copied under `sources/`.
+- `ARCHIVED` — a provenance snapshot has been copied under `sources/`.
 - `HISTORICAL REFERENCE MISSING` — referenced by accepted material but not present at the currently inspected repository path/ref.
 - `CANONICALIZED` — relevant content has been reconciled into canonical Beta documents here.
 - `IMPLEMENTED / NOT YET ACCEPTED` — implementation exists in `DMO-MODULAR`, but no Architect implementation acceptance has been found yet.
@@ -16,7 +17,7 @@ Repository: `diogo-o/workbench`, branch `main`
 
 | Source | Status | Purpose |
 |---|---|---|
-| `BETA_FRONTEND_IMPLEMENTATION_WORKSTREAMS.md` | FOUND / CANONICALIZED / TO IMPORT | Umbrella Beta frontend workstreams A–E, dependencies, gates, ownership and acceptance criteria. Canonicalized into Beta scope, module files, implementation model and integration seams. |
+| `BETA_FRONTEND_IMPLEMENTATION_WORKSTREAMS.md` | FOUND / CANONICALIZED / TO IMPORT | Umbrella Beta frontend workstreams A–E, dependencies, gates, ownership and acceptance criteria. Canonicalized into Beta scope, module files, implementation model, integration seams and `ACCEPTANCE_MATRIX.md`. |
 | `dev/plans/BETA_FRONTEND_WORKSTREAM_A_PLAN.md` | FOUND / CANONICALIZED / TO IMPORT | Shared frontend Workstream A plan. |
 | `dev/plans/BETA_FRONTEND_WORKSTREAM_A2_CORRECTION_PLAN.md` | FOUND / CANONICALIZED / TO IMPORT | A2 production-navigation correction plan. |
 | `dev/reviews/BETA_FRONTEND_WORKSTREAM_PLAN_V2_REVIEW.md` | FOUND / CANONICALIZED / TO IMPORT | Architect acceptance of umbrella V2 plan. |
@@ -42,16 +43,18 @@ Repository: `diogo-o/DMO-MODULAR`, branch `main`
 
 Repository: `diogo-o/dmo-master`, branch `dmo-modular`
 
-The Beta master should carry snapshots of the exact global contracts it depends on, while clearly marking them as derived copies whose upstream authority remains `dmo-master/dmo-modular`.
+The Beta master carries canonicalized Beta contracts and selected provenance snapshots of the exact global contracts it depends on. Upstream authority remains `dmo-master/dmo-modular`.
 
 | Source | Status | Purpose |
 |---|---|---|
 | `global/ACCESS_MODEL.md` | CANONICALIZED / TO IMPORT | Access/module/navigation invariants reflected in Beta access/navigation docs. |
 | `global/MODULAR_IMPLEMENTATION_MODEL.md` | CANONICALIZED / TO IMPORT | Runtime/module implementation boundaries reflected in application/backend-frontend docs. |
-| `modules/JOB_ON.md` | FOUND / CANONICALIZED / TO IMPORT | Global Job On authority constraining `modules/JOB_ON_LIGHT.md`. |
-| `modules/FERRAMENTAS.md` | FOUND / CANONICALIZED / TO IMPORT | Global Tool/Ferramentas authority constraining `modules/FERRAMENTAS_LIGHT.md`. |
-| `modules/CONTROLO.md` | FOUND / CANONICALIZED / TO IMPORT | Global Controlo authority used by Create/Approve Beta slices. |
-| `modules/BOQUILHAS.md` | FOUND / CANONICALIZED / TO IMPORT | Global Boquilhas authority used by `modules/BOQUILHAS.md`. |
+| `global/INFORMATION_MODEL.md` | FOUND / selectively CANONICALIZED / TO IMPORT | Cross-domain identity/information-web relationships used by Beta identity/cross-module docs. |
+| `global/DOCUMENT_FILE_MODEL.md` | FOUND / CANONICALIZED / ARCHIVED | Consolidated into `contracts/DOCUMENTS_AND_FILES.md`; source snapshot archived at `sources/dmo-master/global/DOCUMENT_FILE_MODEL.md`. |
+| `modules/JOB_ON.md` | FOUND / CANONICALIZED / TO IMPORT | Global Job On authority constraining `modules/JOB_ON_LIGHT.md` and lifecycle/document behavior. |
+| `modules/FERRAMENTAS.md` | FOUND / CANONICALIZED / TO IMPORT | Global Tool/Ferramentas authority constraining `modules/FERRAMENTAS_LIGHT.md` and Tool edit lifecycle. |
+| `modules/CONTROLO.md` | FOUND / CANONICALIZED / TO IMPORT | Global Controlo authority used by Create/Approve slices, record lifecycle and document behavior. |
+| `modules/BOQUILHAS.md` | FOUND / CANONICALIZED / TO IMPORT | Global Boquilhas authority used by module and close/reopen lifecycle contract. |
 | `modules/ADMIN.md` | FOUND / selectively CANONICALIZED / TO IMPORT selectively | Shared Admin/access dependency context; not an operational Beta module. |
 | `dev/WORKFLOW.md` | CANONICALIZED / TO IMPORT | Governance/test/acceptance protocol reflected in Beta `WORKFLOW.md`. |
 
@@ -74,14 +77,22 @@ Relevant behavior has been consolidated into:
 - `implementation/CURRENT_FOUNDATION.md`;
 - `architecture/APPLICATION_FOUNDATION.md`;
 - `architecture/ACCESS_AND_NAVIGATION.md`;
+- `architecture/RECORD_LIFECYCLES.md`;
 - `contracts/SHARED_FRONTEND.md`;
-- `implementation/BETA_INTEGRATION_SEAMS.md`.
+- `contracts/DOCUMENTS_AND_FILES.md`;
+- `implementation/BETA_INTEGRATION_SEAMS.md`;
+- `ACCEPTANCE_MATRIX.md`.
 
-## Raw source archive still to do
+## Source archive status
 
-Canonicalization is ahead of source-copy archiving.
+The archive has started at:
 
-The remaining provenance pass should copy selected original files under:
+```text
+sources/README.md
+sources/dmo-master/global/DOCUMENT_FILE_MODEL.md
+```
+
+Remaining source snapshots should be added incrementally under:
 
 ```text
 sources/workbench/
@@ -90,18 +101,16 @@ sources/dmo-work/
 sources/DMO-MODULAR/
 ```
 
-Each copied file should preserve:
+Each copied file must preserve:
 
 - source repository;
 - source branch/ref;
 - original path;
 - source SHA where available;
-- whether it is authority, accepted review, implementation evidence or historical material.
+- classification: architecture authority, accepted review, implementation evidence or historical material.
 
 Raw source copies are evidence/history and do not automatically become current Beta authority.
 
 ## Migration rule
 
-Raw source copies under `sources/` are evidence/history and must preserve provenance. They do not automatically become current Beta authority.
-
-Canonical authority lives in the top-level and structured canonical folders of `dmo-beta-master` after reconciliation and review.
+Canonical authority lives in the top-level and structured canonical folders of `dmo-beta-master` after reconciliation and review. Source snapshots preserve provenance and must never silently override newer accepted Beta decisions or upstream global invariants.
