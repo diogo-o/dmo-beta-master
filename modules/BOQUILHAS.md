@@ -20,15 +20,16 @@ Boquilhas is the Beta BQ external-repair quantity workflow. It records manual qu
 - full History filters/table;
 - Edit with preserved before/after audit;
 - close/reopen on the same `boquilhas_id`;
-- repairer selection from canonical repairer vocabulary;
+- repairer selection from the Boquilhas-owned operational repairer directory;
+- Boquilhas Definições for repairer management and machine/line -> repairer assignment;
 - production-line contextual panel where supported;
 - access and responsive states.
 
 ## Explicitly outside Beta
 
 - mandatory official Boquilhas PDF;
-- internal Boquilhas settings/Admin tab;
-- management of the canonical repairer directory;
+- Admin ownership of day-to-day repairer configuration;
+- Controlo ownership of repairer configuration;
 - Job On planning ownership;
 - Armazém physical stock/location ownership;
 - per-piece BQ identity;
@@ -167,13 +168,25 @@ The original Entrada must not be rewritten to hide the discrepancy.
 
 Any later discrepancy-resolution workflow is a new recorded fact with its own note/attribution; the note is not required merely to save the Entrada.
 
-## Repairer
+## Repairers and line assignments
+
+Boquilhas owns the operational repairer configuration used by its own workflow.
+
+```text
+Boquilhas / Definições
+├─ repairer directory
+└─ machine/line -> repairer assignment
+```
+
+Machine/line assignments are operational settings, not Admin configuration and not Controlo configuration. They are changed in Boquilhas because Boquilhas is the module that works with repairers.
+
+Assignments are independent per machine/line. Changing one assignment must not silently cascade to another machine/line.
 
 Every external Saída stores the final selected canonical `repairer_id`.
 
-A suggested/default repairer may be shown, but the human can select the final value where allowed.
+A configured machine/line assignment may provide the suggested/default repairer for that operational context, but the persisted movement retains the final repairer relation used for that movement.
 
-Historical movements retain their repairer relation even if the directory/default changes later.
+Historical movements retain their repairer relation even if the repairer directory or line assignment changes later.
 
 ## Close/reopen
 
@@ -253,7 +266,8 @@ Frontend must not:
 - movement append;
 - movement edit + audit;
 - balance/read projection;
-- repairer query;
+- repairer directory query/manage;
+- machine/line -> repairer assignment read/update;
 - close/reopen;
 - History query;
 - Tool/Job On context reads.
@@ -267,6 +281,8 @@ Frontend must not:
 - excess Entrada is recorded/displayed;
 - negative saldo is visible and non-blocking by itself;
 - Saída stores canonical repairer choice;
+- Boquilhas Definições owns repairer directory and machine/line assignments;
+- changing a line assignment does not rewrite historical movements;
 - business date and recorded timestamp remain distinct;
 - close/reopen retains the same `boquilhas_id` and full history;
 - no mandatory PDF or internal settings tab appears.
