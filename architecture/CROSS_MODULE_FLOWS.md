@@ -15,7 +15,7 @@ Job On / production planning
   ├─ cm_id ──→ Controlo
   │             └─ Resumo da produção
   │                  └─ Peso populated with machine/reference/lot/process/CM context
-  ├─ mf_id ──→ Controlo / Reparação Interna where required
+  ├─ mf_id ──→ Controlo where required
   └─ bq_id ──→ Boquilhas
 
 Job On planning/date changes
