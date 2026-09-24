@@ -6,21 +6,26 @@ This file explains how the Beta modules connect without transferring domain owne
 
 ## Core chain
 
+Job On is the centre of production planning. It creates the production context and the production-specific CM/MF/BQ snapshots. From there, the required planning information flows to the operational modules.
+
 ```text
 Tool
-  ↓
-Job On
-  ├─ CM context ──→ Peso ──→ Controlo Approve
-  ├─ MF context ──→ Pegamentos
-  └─ BQ context ──→ Boquilhas
+  ↓ selected in Job On
+Job On / production planning
+  ├─ cm_id ──→ Controlo
+  │             └─ Resumo da produção
+  │                  └─ Peso populated with machine/reference/lot/process/CM context
+  ├─ mf_id ──→ Controlo / Reparação Interna where required
+  └─ bq_id ──→ Boquilhas
 
-Job On
-  ├─ reads Controlo status/availability
-  ├─ reads Boquilhas status/availability
-  └─ reads document availability
+Job On planning/date changes
+  └─ notify relevant modules
+       └─ each module pulls only the production context it needs
 ```
 
-The arrows mean relation/consumption, not ownership transfer.
+The arrows mean relation/consumption, not ownership transfer. Job On does not own module outputs. Each module consumes the relevant production context, applies its own workflow and persists only its own output.
+
+A module must not require the operator to re-enter facts already known from the Job On context.
 
 ## Tool → Job On
 
@@ -39,14 +44,16 @@ Job On never creates a second Tool authority.
 
 ## Job On → Controlo Create
 
-Normal Peso production flow:
+For a production that already has Job On context, the flow enters Controlo through the **Resumo for that production**.
 
 ```text
 jobon_id
+→ Resumo da produção
 → cm_id
-→ tool_id
-→ peso_id
+→ Peso
 ```
+
+The Resumo is the production-facing entry/context for Controlo. Peso is then populated from the CM/Job On context with the facts already known for that production, including the applicable machine, reference, lot, process and CM identity/context. The operator enters only Peso-owned measurement data.
 
 The exact production context remains visible in the Controlo UI, but Peso does not duplicate Job On as its own production entity.
 
@@ -117,20 +124,18 @@ Examples:
 
 These are read projections only. Job On does not copy or mutate foreign module facts.
 
-## Shared Tool flow
+## Tool selection and downstream context
 
-Job On, Controlo and Boquilhas use one shared Tool search/select/create orchestration.
+Canonical Tool selection/creation for a production occurs in Job On. Downstream modules consume the resulting production context; they do not independently reselect the same Tool just to reconstruct production identity.
 
 ```text
-origin module
-→ search Tool
-→ explicit selection OR create
-→ canonical tool_id returned
-→ origin state restored
-→ owning module persists its own relation
+Job On
+→ select/create canonical tool_id
+→ create cm_id / mf_id / bq_id snapshot
+→ downstream module receives the relevant snapshot/context
 ```
 
-No module creates its own Tool picker identity model or private registry.
+Contextual Tool history/details may still be queried when the user explicitly asks for them, but those reads are task-specific and do not replace the production context.
 
 ## Shared destination vs permission
 
@@ -142,6 +147,24 @@ Controlo Create + Controlo Approve -> controlo
 ```
 
 The visible collapse never merges backend permissions.
+
+## Context notifications and light reads
+
+A Job On create/change can notify only the modules affected by that production context. The notification is a small signal that identifies the changed production/context; it is not a dump of all domain data.
+
+The receiving module then performs a targeted read for the information required by its workflow.
+
+```text
+Job On changed
+→ small ping/context identifier
+→ module-specific targeted query
+→ populate only required fields
+→ module workflow/output
+```
+
+Do not scan all Tools, Job Ons or module records waiting for a condition to appear. Queries should be scoped by the context already in hand.
+
+This keeps packets/read models small and makes each workflow easier to test and reason about.
 
 ## Backend/frontend crossing
 
