@@ -15,6 +15,7 @@ Ferramentas Light provides the Beta's contextual Tool selection, creation and re
 - explicit candidate selection;
 - contextual Tool summary/detail needed by Job On, Controlo and Boquilhas;
 - create a missing Tool and return the canonical `tool_id` to the originating workflow;
+- create that canonical Tool without requiring Armazém location/movement data;
 - reuse the canonical Tool ficha/read model where available;
 - preserve one shared Tool orchestration rather than per-module copies.
 
@@ -26,6 +27,7 @@ Ferramentas Light provides the Beta's contextual Tool selection, creation and re
 - complete utilisation history UI;
 - complete change-request audit surface;
 - Armazém location/movement ownership;
+- any requirement to assign a Tool to an Armazém position during Beta Tool creation;
 - full future Tool-maintenance experience.
 
 ## Canonical identity
@@ -65,6 +67,21 @@ Beta surfaces must not duplicate these into module-owned master data.
 Ferramentas and Ferramentas Approve are contextual/invisible access levels. They create no top-level navigation destination.
 
 A Tool ficha may be opened contextually from Job On, Controlo, Boquilhas or other future modules when a real `tool_id` is referenced and access allows it.
+
+## Tool creation without Armazém
+
+Armazém is outside Beta scope. A new canonical Tool must therefore be creatable and usable by Beta workflows without any warehouse/location assignment.
+
+```text
+Criar Tool
+→ persist canonical tool_id + Tool-owned facts required by the Tool contract
+→ no Armazém position required
+→ return tool_id to Job On/origin workflow
+```
+
+Absence of Armazém context is not an error and must not block Tool creation, Tool selection, Job On planning or downstream Beta use.
+
+When Armazém is implemented later, it may add its own location/movement relation to the existing `tool_id`; it must not require replacement of the Tool identity created in Beta.
 
 ## Search/select/create contract
 
@@ -140,6 +157,7 @@ Frontend must not:
 - ambiguous candidates require explicit human selection;
 - no candidate is silently auto-selected;
 - inline Tool creation returns a canonical `tool_id`;
+- Tool creation succeeds without Armazém location/movement data;
 - cancel restores the origin workflow unchanged;
 - Job On/Controlo/Boquilhas reuse the same Tool orchestration;
 - Tool-visible fields are read from Tool authority, not copied into module master data;
